@@ -2,6 +2,7 @@ import streamlit as st
 import torch
 import numpy as np
 import pandas as pd
+import os
 
 from torch_geometric.data import Data
 
@@ -24,16 +25,23 @@ def load_data_and_model():
       - movies_df: DataFrame with 'movieId' and 'title'
     """
 
-    # ------------------------------
-    # A) Load CSVs (adjust paths!)
-    # ------------------------------
-    dataset_path = "/app"
-    ratings = pd.read_csv(f"{dataset_path}/ratings.csv")
-    movies_df = pd.read_csv(f"{dataset_path}/movies.csv")
+    # Option A: Directly use relative paths if CSVs are in the same folder
+    ratings = pd.read_csv("ratings.csv")
+    movies_df = pd.read_csv("movies.csv")
 
-    # If you want to avoid reprocessing everything, you can do so.
-    # But let's do a minimal version to get the user/movie mapping:
+    # (If you need tags.csv, you can do the same: tags = pd.read_csv("tags.csv"))
 
+    # ------------------------------------------------
+    # Alternatively, compute the script's directory:
+    #
+    # script_dir = os.path.dirname(os.path.realpath(__file__))
+    # ratings_path = os.path.join(script_dir, "ratings.csv")
+    # movies_path = os.path.join(script_dir, "movies.csv")
+    # ratings = pd.read_csv(ratings_path)
+    # movies_df = pd.read_csv(movies_path)
+    # ------------------------------------------------
+
+    # Minimal user/movie mapping logic:
     user_ids = ratings['userId'].unique()
     movie_ids = ratings['movieId'].unique()
 
@@ -43,19 +51,17 @@ def load_data_and_model():
     # Reverse mapping for movies: (movie_idx -> movieId)
     reverse_movie_mapping = {v: k for k, v in movie_mapping.items()}
 
-    # User -> user_idx
+    # Add columns for user_idx and movie_idx
     ratings['user_idx'] = ratings['userId'].map(user_mapping)
-    # Movie -> movie_idx
     ratings['movie_idx'] = ratings['movieId'].map(movie_mapping)
 
     # Build edge_index
-    import torch
     edge_index = torch.tensor(
-        [ratings['user_idx'].values, ratings['movie_idx'].values], dtype=torch.long
+        [ratings['user_idx'].values, ratings['movie_idx'].values],
+        dtype=torch.long
     )
 
-    # We'll do a minimal node feature approach here: random features for demonstration
-    # or you can replicate the EXACT same logic (random embedding + PCA, etc.) from train.py
+    # Minimal node feature approach (random features for demonstration)
     num_users = len(user_mapping)
     num_movies = len(movie_mapping)
     embedding_dim = 138  # e.g., 128 + 10 from your training
@@ -67,9 +73,7 @@ def load_data_and_model():
         edge_index=edge_index
     )
 
-    # ------------------------------
-    # B) Load Model
-    # ------------------------------
+    # Load model
     best_model_path = "best_gnn_vae_model1.pth"
 
     input_dim = 138
@@ -129,8 +133,8 @@ def main():
         # 4) Sort top-K
         top_k = 10
         predicted_ratings = recon.numpy()
-        # argsort desc
-        sorted_indices = np.argsort(-predicted_ratings)  # negative for descending
+        # Sort descending
+        sorted_indices = np.argsort(-predicted_ratings)
         top_indices = sorted_indices[:top_k]
 
         st.subheader(f"Top {top_k} Recommendations for user {user_id_input}:")
@@ -140,9 +144,7 @@ def main():
             # Convert movie_idx -> movieId
             movie_id = reverse_movie_mapping[movie_idx]
 
-            # Get movie title
-            # Filter movies_df to find the row with this movieId
-            # movies.csv typically has columns: movieId, title, genres
+            # Get movie title from movies_df
             filtered = movies_df[movies_df['movieId'] == movie_id]
             if len(filtered) > 0:
                 title = filtered.iloc[0]['title']
