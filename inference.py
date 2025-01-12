@@ -12,7 +12,8 @@ from torch_geometric.nn import GCNConv, GATConv
 # 1. GNN_VAE Model Definition (same as in train.py)
 # -------------------------------------------------------
 class GNN_VAE(nn.Module):
-    def __init__(self, input_dim, hidden_channels, latent_dim, decoder_channels, num_tags, tag_embedding_dim=50, dropout=0.5):
+    def __init__(self, input_dim, hidden_channels, latent_dim, decoder_channels,
+                 num_tags, tag_embedding_dim=50, dropout=0.5):
         super(GNN_VAE, self).__init__()
         # Encoder
         self.conv1 = GATConv(input_dim, hidden_channels, heads=2, concat=False)
@@ -140,22 +141,22 @@ def prepare_data_inference(dataset_path):
     genre_features = mlb.fit_transform(movies['genres'].str.split('|'))
     genre_tensor = torch.tensor(genre_features, dtype=torch.float)
 
-    # 3.3 Process tags (with known num_tags = 1589)
-    #    We assume you used the same approach in train.py to get tag_to_idx
-    #    But here, we'll just do it again for completeness.
+    # 3.3 Process tags
     unique_tags = tags['tag'].unique()
     tag_to_idx = {tag: idx for idx, tag in enumerate(unique_tags)}
-    # in train.py, num_tags was len(tag_to_idx) but we now fix it to 1589
-    # (This is okay as long as we had 1589 unique tags originally.)
+    # In train.py, num_tags was len(tag_to_idx).
+    # We'll assume that is 1589 to match your best_model parameters.
 
-    padding_idx = 1589  # num_tags
+    padding_idx = 1589  # num_tags from training
     tags_grouped = tags.groupby('movieId')['tag'].apply(list).reset_index()
     movies = movies.merge(tags_grouped, on='movieId', how='left')
     movies['tag'] = movies['tag'].apply(lambda x: x if isinstance(x, list) else [])
     movies['tag_indices'] = movies['tag'].apply(lambda x: [tag_to_idx[t] for t in x if t in tag_to_idx])
 
     max_tags = movies['tag_indices'].apply(len).max()
-    movies['tag_indices_padded'] = movies['tag_indices'].apply(lambda x: x + [padding_idx]*(max_tags - len(x)))
+    movies['tag_indices_padded'] = movies['tag_indices'].apply(
+        lambda x: x + [padding_idx]*(max_tags - len(x))
+    )
     tag_indices_array = np.vstack(movies['tag_indices_padded'].values)
     tag_indices_tensor = torch.tensor(tag_indices_array, dtype=torch.long)
 
@@ -204,12 +205,14 @@ def prepare_data_inference(dataset_path):
     x = torch.tensor(x_scaled, dtype=torch.float)
 
     # 3.8 Build edge index
-    edge_index = torch.tensor([ratings['user_idx'].values, ratings['movie_idx'].values], dtype=torch.long)
+    edge_index = torch.tensor(
+        [ratings['user_idx'].values, ratings['movie_idx'].values],
+        dtype=torch.long
+    )
 
     data = Data(x=x, edge_index=edge_index)
 
-    # 3.9 You can also build edge_weight if needed, but for inference
-    #     you may only need data.x and data.edge_index
+    # 3.9 (Optional) If you need edge_weight for some reason, replicate that code too.
     return data, tag_indices_tensor, user_mapping, movie_mapping
 
 # -------------------------------------------------------
@@ -218,7 +221,7 @@ def prepare_data_inference(dataset_path):
 if __name__ == "__main__":
     # Example usage:
     # 4.1. Prepare Data
-    dataset_path = "/app"
+    dataset_path = "."  # CSVs are in the same folder
     data, tag_indices_tensor, user_mapping, movie_mapping = prepare_data_inference(dataset_path)
 
     # 4.2. Load best model with known hyperparams
@@ -250,9 +253,7 @@ if __name__ == "__main__":
     print(reconstructed_ratings[:10])
 
     # 4.5. Or pick a user index, build an edge subset, etc.
-    #      This is just a demonstration snippet.
     some_user_idx = 0  # e.g. first user
-    # Gather edges where row == some_user_idx
     row, col = data.edge_index
     user_edge_mask = (row == some_user_idx)
     user_edge_index = data.edge_index[:, user_edge_mask]
