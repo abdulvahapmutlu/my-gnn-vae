@@ -29,19 +29,7 @@ def load_data_and_model():
     ratings = pd.read_csv("ratings.csv")
     movies_df = pd.read_csv("movies.csv")
 
-    # (If you need tags.csv, you can do the same: tags = pd.read_csv("tags.csv"))
-
-    # ------------------------------------------------
-    # Alternatively, compute the script's directory:
-    #
-    # script_dir = os.path.dirname(os.path.realpath(__file__))
-    # ratings_path = os.path.join(script_dir, "ratings.csv")
-    # movies_path = os.path.join(script_dir, "movies.csv")
-    # ratings = pd.read_csv(ratings_path)
-    # movies_df = pd.read_csv(movies_path)
-    # ------------------------------------------------
-
-    # Minimal user/movie mapping logic:
+        # Minimal user/movie mapping logic:
     user_ids = ratings['userId'].unique()
     movie_ids = ratings['movieId'].unique()
 
