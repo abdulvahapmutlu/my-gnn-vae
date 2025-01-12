@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-gnn-vae-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-gnn-vae
+  template:
+    metadata:
+      labels:
+        app: my-gnn-vae
+    spec:
+      containers:
+        - name: my-gnn-vae
+          image: my-gnn-vae:latest  # or <your Docker Hub/registry>my-gnn-vae:latest
+          ports:
+            - containerPort: 8501
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-gnn-vae-service
+spec:
+  type: NodePort
+  selector:
+    app: my-gnn-vae
+  ports:
+    - port: 8501
+      targetPort: 8501
+      nodePort: 30008

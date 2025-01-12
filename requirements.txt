@@ -1,0 +1,28 @@
+# Core Libraries
+pandas
+numpy
+scikit-learn
+matplotlib
+tqdm
+joblib
+optuna
+
+# PyTorch
+torch>=1.11.0
+torchvision
+torchaudio
+
+# PyTorch Geometric + Dependencies
+# You can tweak the versions as needed, depending on your CUDA or CPU environment
+torch-geometric
+torch-scatter
+torch-sparse
+torch-cluster
+torch-spline-conv
+
+# Visualization
+streamlit
+seaborn
+
+# Additional (depending on your code usage):
+umap-learn
