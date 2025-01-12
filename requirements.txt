@@ -1,23 +1,23 @@
 # requirements.txt
 
-# Core libs
+# 1) Install NumPy first to avoid "RuntimeError: Numpy is not available"
+numpy==1.23.5
+
+# 2) Then any libraries that need NumPy
 pandas
-numpy
 scikit-learn
 matplotlib
 tqdm
 joblib
 optuna
 
-# First, pin the main torch packages
+# 3) Now install torch packages
 torch==2.0.1
 torchvision==0.15.2
 torchaudio==2.0.2
 
-# Then point pip to the PyG wheels
+# 4) PyTorch Geometric (CPU wheels)
 --find-links https://data.pyg.org/whl/torch-2.0.1+cpu.html
-
-# Let PyTorch Geometric handle torch-scatter, torch-sparse, etc.
 torch-geometric==2.3.0
 
 # Visualization
