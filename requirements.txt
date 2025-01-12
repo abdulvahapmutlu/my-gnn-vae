@@ -7,8 +7,6 @@ tqdm
 joblib
 optuna
 
-# PyTorch (Do not install here; installed via `setup.sh`)
-# PyTorch Geometric (Do not install here; installed via `setup.sh`)
 
 # Visualization
 streamlit
