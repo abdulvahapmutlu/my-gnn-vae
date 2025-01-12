@@ -1,8 +1,57 @@
-__pycache__/
-.DS_Store
-.ipynb_checkpoints/
-*.pth
-*.pkl
+# Python-related
 *.pyc
-.env
-/venv
+*.pyo
+*.pyd
+__pycache__/
+*.env
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Logs and output
+*.log
+*.out
+*.err
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Docker-related
+*.env
+docker-compose.override.yml
+
+# PyTorch model files
+*.pt
+*.pth
+
+# Deployment files
+*.key
+*.pem
+
+# Streamlit cache
+.streamlit/
+
+# Devcontainer configurations
+.devcontainer/
+
+# Ignore all CSV files except the ones you intentionally include
+*.csv
+!ratings.csv
+!movies.csv
+!tags.csv
+
+# JSON files
+*.json
+!training_history.json
