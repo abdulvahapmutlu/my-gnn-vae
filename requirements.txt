@@ -8,13 +8,13 @@ joblib
 optuna
 
 # PyTorch (install before any PyTorch Geometric libs)
-torch>=2.5.0
-torchvision
-torchaudio
+torch==2.0.1
+torchvision==0.15.2
+torchaudio==2.0.2
 
 # PyTorch Geometric + Dependencies (must come after torch)
---find-links https://data.pyg.org/whl/torch-2.5.0+cpu.html
-torch-scatter==2.1.2
+--find-links https://data.pyg.org/whl/torch-2.0.1+cpu.html
+torch-scatter==2.0.9
 torch-sparse==0.6.15
 torch-cluster==1.6.3
 torch-spline-conv==1.2.1
