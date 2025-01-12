@@ -17,7 +17,7 @@
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
+  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && xargs -a packages.txt sudo apt install -y; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit torch; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
     "server": "streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
@@ -31,3 +31,4 @@
     8501
   ]
 }
+
