@@ -118,23 +118,11 @@ The dataset consists of three CSV files:
 3. `tags.csv`: Contains user-generated tags for movies.
 
 The data is preprocessed to construct the bipartite graph and encode user-item interactions.
-### Citation
 
 The dataset used in this project is the **MovieLens Latest Small (ml-latest-small)** dataset, provided by GroupLens. 
 
 For more information about the dataset, visit the [GroupLens website](https://grouplens.org/datasets/movielens/).
 
-**BibTeX Citation:**
-
-```
-@misc{movielens,
-  author = {F. Maxwell Harper and Joseph A. Konstan},
-  title = {The MovieLens Datasets: History and Context},
-  year = {2015},
-  publisher = {ACM Transactions on Interactive Intelligent Systems (TIIS)},
-  url = {https://grouplens.org/datasets/movielens/}
-}
-```
 ---
 
 ## Getting Started
@@ -143,14 +131,14 @@ For more information about the dataset, visit the [GroupLens website](https://gr
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
+   ```
+   git clone https://github.com/abdulvahapmutlu/my-gnn-vae.git
+   cd my-gnn-vae
    ```
 
 2. Install dependencies:
 
-   ```bash
+   ```
    pip install -r requirements.txt
    ```
 
@@ -158,7 +146,7 @@ For more information about the dataset, visit the [GroupLens website](https://gr
 
 1. Start the Streamlit app:
 
-   ```bash
+   ```
    streamlit run streamlit_app.py
    ```
 
@@ -168,15 +156,18 @@ For more information about the dataset, visit the [GroupLens website](https://gr
 
 1. Build the Docker image:
 
-   ```bash
+   ```
    docker build -t my-gnn-vae .
    ```
 
 2. Run the container:
 
-   ```bash
+   ```
    docker run -p 8501:8501 my-gnn-vae
    ```
+
+> **Note:** Dataset paths need to be adjusted for Docker and Kubernetes.
+
 
 ---
 
@@ -194,7 +185,7 @@ For more information about the dataset, visit the [GroupLens website](https://gr
    - Use `train.py` to train the GNN-VAE model.
    - Hyperparameters are optimized using Optuna.
 
-   ```bash
+   ```
    python train.py
    ```
 
@@ -210,7 +201,7 @@ For more information about the dataset, visit the [GroupLens website](https://gr
 
 Use `inference.py` to generate recommendations for specific users. Example:
 
-```bash
+```
 python inference.py
 ```
 
@@ -226,27 +217,7 @@ Modify the script to specify user IDs or edge subsets for predictions.
 
 2. **CI/CD Pipeline**:
    - GitHub Actions automatically test and deploy the app.
-   - Pipeline configuration is in `ci-cd.txt`.
-
----
-
-## Project Structure
-
-```
-.
-├── .devcontainer/          # DevContainer setup
-├── deployment/             # Kubernetes deployment files
-├── train.py                # Model training script
-├── inference.py            # Inference script
-├── streamlit_app.py        # Streamlit app
-├── requirements.txt        # Project dependencies
-├── ratings.csv             # Ratings data
-├── movies.csv              # Movies data
-├── tags.csv                # Tags data
-├── best_gnn_vae_model1.pth # Trained model weights
-├── ci-cd.txt               # CI/CD pipeline configuration
-└── README.md               # Project documentation
-```
+   - Pipeline configuration demo is in `ci-cd.txt`.
 
 ---
 
@@ -257,19 +228,19 @@ Contributions are welcome! Please follow these steps:
 1. Fork the repository.
 2. Create a new branch:
 
-   ```bash
+   ```
    git checkout -b feature/YourFeature
    ```
 
 3. Commit your changes:
 
-   ```bash
+   ```
    git commit -m "Add YourFeature"
    ```
 
 4. Push to your branch:
 
-   ```bash
+   ```
    git push origin feature/YourFeature
    ```
 
