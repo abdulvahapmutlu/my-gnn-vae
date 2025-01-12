@@ -1,4 +1,6 @@
-# Core Libraries
+# requirements.txt
+
+# Core libs
 pandas
 numpy
 scikit-learn
@@ -7,17 +9,15 @@ tqdm
 joblib
 optuna
 
-# PyTorch (install before any PyTorch Geometric libs)
+# First, pin the main torch packages
 torch==2.0.1
 torchvision==0.15.2
 torchaudio==2.0.2
 
-# PyTorch Geometric + Dependencies (must come after torch)
+# Then point pip to the PyG wheels
 --find-links https://data.pyg.org/whl/torch-2.0.1+cpu.html
-torch-scatter==2.0.9
-torch-sparse==0.6.15
-torch-cluster==1.6.3
-torch-spline-conv==1.2.1
+
+# Let PyTorch Geometric handle torch-scatter, torch-sparse, etc.
 torch-geometric==2.3.0
 
 # Visualization
