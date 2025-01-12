@@ -1,5 +1,5 @@
 
-# Personalized Recommendation Systems Using GNN-VAEs
+# Personalized Recommendation Systems Using GNN-VAEs on MovieLens
 
 [![Streamlit App](https://img.shields.io/badge/Streamlit-Live_App-orange)](https://my-gnn-vae-hksclsanjm5gjhwfzruavi.streamlit.app/)
 
