@@ -14,13 +14,23 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Install PyTorch
+        run: |
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
       - name: Install dependencies
         run: pip install --no-cache-dir -r requirements.txt
 
+      - name: Install PyTorch Geometric
+        run: |
+          pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
+            -f https://data.pyg.org/whl/torch-$(python -c "import torch; print(torch.__version__.split('+')[0])").html
+          pip install torch-geometric
+
       - name: Lint and Test
         run: |
-          flake8 .  # or any linter
-          pytest tests/  # if you have tests
+          flake8 .
+          pytest tests/
 
   docker-build:
     needs: build-and-test
