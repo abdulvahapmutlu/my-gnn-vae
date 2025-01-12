@@ -28,8 +28,9 @@ warnings.filterwarnings("ignore")
 # 1. Data Preparation
 # ----------------------
 
-# You can modify this path to point to your local dataset directory.
-dataset_path = "/app"
+# You can modify this path if needed (e.g., dataset_path = "data").
+# Right now, we assume CSVs are in the same folder as train.py:
+dataset_path = "."
 
 # Load data
 ratings = pd.read_csv(f"{dataset_path}/ratings.csv")
@@ -62,7 +63,9 @@ movies['tag'] = movies['tag'].apply(lambda x: x if isinstance(x, list) else [])
 movies['tag_indices'] = movies['tag'].apply(lambda x: [tag_to_idx[t] for t in x if t in tag_to_idx])
 
 max_tags = movies['tag_indices'].apply(len).max()
-movies['tag_indices_padded'] = movies['tag_indices'].apply(lambda x: x + [padding_idx] * (max_tags - len(x)))
+movies['tag_indices_padded'] = movies['tag_indices'].apply(
+    lambda x: x + [padding_idx] * (max_tags - len(x))
+)
 tag_indices_array = np.vstack(movies['tag_indices_padded'].values)
 tag_indices_tensor = torch.tensor(tag_indices_array, dtype=torch.long)
 
@@ -135,13 +138,12 @@ train_idx = torch.tensor(train_idx, dtype=torch.long)
 val_idx = torch.tensor(val_idx, dtype=torch.long)
 test_idx = torch.tensor(test_idx, dtype=torch.long)
 
-
 # ----------------------
 # 4. Model Definition
 # ----------------------
 class GNN_VAE(nn.Module):
-    def __init__(self, input_dim, hidden_channels, latent_dim, decoder_channels, num_tags, tag_embedding_dim=50,
-                 dropout=0.5):
+    def __init__(self, input_dim, hidden_channels, latent_dim, decoder_channels,
+                 num_tags, tag_embedding_dim=50, dropout=0.5):
         super(GNN_VAE, self).__init__()
         # Encoder
         self.conv1 = GATConv(input_dim, hidden_channels, heads=2, concat=False)
@@ -211,7 +213,6 @@ class GNN_VAE(nn.Module):
         tag_reduced = self.tag_dim_reduction(tag_mean)
         return tag_reduced
 
-
 # ----------------------
 # 5. Loss & Metrics
 # ----------------------
@@ -220,26 +221,23 @@ def vae_loss(recon, edge_weight, mu, logvar):
     kl_div = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
     return recon_loss + 0.001 * kl_div
 
-
 def precision_at_k(pred_scores, true_labels, k=10):
     top_k = torch.topk(pred_scores, k=k, largest=True).indices
     top_k_labels = true_labels[top_k]
     return top_k_labels.sum().item() / k
 
-
 def ndcg_at_k(pred_scores, true_labels, k=10):
     _, indices = torch.topk(pred_scores, k=k, largest=True)
     dcg = (true_labels[indices] / torch.log2(torch.arange(2, k + 2).float())).sum().item()
-    ideal = (torch.sort(true_labels, descending=True).values[:k] / torch.log2(
-        torch.arange(2, k + 2).float())).sum().item()
+    ideal = (torch.sort(true_labels, descending=True).values[:k] /
+             torch.log2(torch.arange(2, k + 2).float())).sum().item()
     return dcg / ideal if ideal > 0 else 0.0
-
 
 # ----------------------
 # 6. Training & Evaluation
 # ----------------------
-def train_model(model, data, train_idx, val_idx, edge_weight, tag_indices, optimizer, scheduler, epochs=50,
-                early_stopping_patience=7):
+def train_model(model, data, train_idx, val_idx, edge_weight, tag_indices,
+                optimizer, scheduler, epochs=50, early_stopping_patience=7):
     history = {'train_loss': [], 'val_loss': [], 'precision': [], 'ndcg': []}
     best_val_loss = float('inf')
     patience_counter = 0
@@ -294,7 +292,6 @@ def train_model(model, data, train_idx, val_idx, edge_weight, tag_indices, optim
         model.load_state_dict(best_model_state)
     return history
 
-
 def evaluate_model(model, data, test_idx, edge_weight, tag_indices):
     model.eval()
     with torch.no_grad():
@@ -306,7 +303,6 @@ def evaluate_model(model, data, test_idx, edge_weight, tag_indices):
 
     print(f"Test Loss: {test_loss.item():.4f}, Precision@10: {precision:.4f}, NDCG@10: {ndcg:.4f}")
     return test_loss.item(), precision, ndcg
-
 
 # ----------------------
 # 7. Optuna Objective
@@ -337,7 +333,6 @@ def objective(trial):
 
     final_val_loss = history['val_loss'][-1]
     return final_val_loss
-
 
 # ----------------------
 # 8. Run Hyperparameter Tuning
