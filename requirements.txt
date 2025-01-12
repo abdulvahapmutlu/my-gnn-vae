@@ -18,7 +18,7 @@ torchaudio==2.0.2
 
 # 4) PyTorch Geometric (CPU wheels)
 --find-links https://data.pyg.org/whl/torch-2.0.1+cpu.html
-torch-geometric==2.3.0
+torch-geometric==2.6.1
 
 # Visualization
 streamlit
