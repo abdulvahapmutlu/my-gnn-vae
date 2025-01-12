@@ -7,6 +7,17 @@ tqdm
 joblib
 optuna
 
+# PyTorch (install before any PyTorch Geometric libs)
+torch>=1.11.0
+torchvision
+torchaudio
+
+# PyTorch Geometric + Dependencies (must come after torch)
+torch-scatter
+torch-sparse
+torch-cluster
+torch-spline-conv
+torch-geometric
 
 # Visualization
 streamlit
